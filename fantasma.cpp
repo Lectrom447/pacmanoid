@@ -1,11 +1,13 @@
 #include "fantasma.h"
 #include "graphito.h"
+#include "utilidades.h"
+#include "configuracion.h"
 #include <iostream>
 
 using namespace graphito;
 using namespace std;
 
-Fantasma::Fantasma(int x, int y, int tamano, COLOR color) {
+Fantasma::Fantasma(int x, int y, int tamano) {
     this->x = x;
     this->y = y;
     this->dibujarX = x;
@@ -13,6 +15,9 @@ Fantasma::Fantasma(int x, int y, int tamano, COLOR color) {
     this->tamano = tamano;
     this->color = color;
     this->mitadTamano = tamano/2;
+    this->color = configuracion::PALETA_COLORES[
+        utilidades::numeroAleatorio(configuracion::PALETA_COLORES.size() - 1)
+    ];
 }
 
 void Fantasma::dibujar() {

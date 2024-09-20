@@ -13,11 +13,11 @@ class Fantasma: public ObjetoUI {
         int esVisible = true;
         int mitadTamano;
         int direccionAnimacion = 1;
-        graphito::COLOR color;
+        int color;
         void dibujar();
         void animar();
     public:
-        Fantasma(int x, int y, int tamano, graphito::COLOR color);
+        Fantasma(int x, int y, int tamano);
         void siguienteTiempo();
 };
 

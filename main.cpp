@@ -3,6 +3,7 @@
 
 #include "graphito.h"
 #include  "juego.h"
+#include "utilidades.h"
 // #include "canon.h"
 // #include "boton.h"
 // #include "utilidades.h"
@@ -113,6 +114,8 @@ using namespace graphito;
 // }
 
 int main() {
+    
+    std::cout << utilidades::numeroAleatorio(4)  << std::endl;
     VDefine(
         configuracion::ANCHO_DE_VENTANA, 
         configuracion::ALTO_DE_VENTANA, 
