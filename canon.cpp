@@ -6,24 +6,31 @@
 #include "canon.h"
 #include "utilidades.h"
 #include "configuracion.h"
+#include "proyectil.h"
+#include "puntotrayectoria.h"
+#include "fantasma.h"
 
 using namespace graphito;
 using namespace std;
 
-Canon::Canon(int x, int y, int size) {
+Canon::Canon(int x, int y, int size, int* puntos, std::vector<Fantasma*> *fantasmas) {
     this->x = x;
     this->y = y;
     this->dibujarX = x;
     this->dibujarY = y;
     this->size = size;
     this->radio = size / 2;
+    this->puntos = puntos;
+    this->fantasmas = fantasmas;
+    utilidades::mezclarVector(&configuracion::PALETA_COLORES);
+    this->calcularTrayectoria();
 }
 
 void Canon::dibujar() {
     float angRad = utilidades::convertirARadianes(this->angulo);
     int angSuperiorBoca = this->angulo + this->desfaseAnimacionDisparo;
     int angInferiorBoca = this->angulo - this->desfaseAnimacionDisparo;
-    this->calcularTrayectoria();
+    // this->calcularTrayectoria();
 
     FormatoRelleno(ER_SOLIDO, CL_AMARILLO);
     FormatoBorde(EB_CONTINUO, 3, CL_ORO);
@@ -74,6 +81,7 @@ void Canon::animar() {
 void Canon::siguienteTiempo() {
     this->dibujar();
     this->animar();
+    this->manejarProyectil();
 }
 
 void Canon::iniciarAnimacionDisparo() {
@@ -88,13 +96,21 @@ void Canon::finalizarAnimacionDisparo() {
 }
 
 void Canon::disparar() {
+    if(this->proyectil != nullptr) return;
     this->iniciarAnimacionDisparo();
-    cout << "Disparar" << endl;
+    float proyectilAngrad = utilidades::convertirARadianes(this->angulo);
+    this->proyectil = new Proyectil(
+        this->x + cos(proyectilAngrad) * this->radio,
+        this->y - sin(proyectilAngrad) * this->radio,
+        &this->trayectoria
+    );
+    this->agregarHijo(this->proyectil);
 }
 
 // Modificadores de estado
 void Canon::rotar(int angulo) {
     this->angulo = utilidades::restringir(angulo, 15, 165);
+    this->calcularTrayectoria();
 }
 
 void Canon::moverH(int x) {
@@ -104,6 +120,7 @@ void Canon::moverH(int x) {
         configuracion::ANCHO_DE_VENTANA - this->radio - 40
     );
     this->dibujarX = this->x;
+    this->calcularTrayectoria();
 }
 
 
@@ -126,36 +143,103 @@ int Canon::obtenerRadio() {
 
 // Funciones Privadas
 void Canon::calcularTrayectoria() {
-    int multiplicadorDistanciaOrigen = (this->radio/25) + 1;
 
-    FormatoRelleno(ER_SOLIDO, CL_BLANCO);
-    FormatoBorde(EB_CONTINUO, 1, CL_BLANCO);
+    for (size_t i = 0; i < this->trayectoria.size(); i++) {
+        PuntoTrayectoria* puntoTrayectoria = this->trayectoria[i];
+        this->eliminarHijo(puntoTrayectoria);
+        delete puntoTrayectoria;
+    }
 
+    this->trayectoria.clear();
+    int multiplicadorDistanciaOrigen = 0;
     int direccion = this->angulo;
-    int origenX = this->x;
-    int origenY = this->y;
     float direccionRad = utilidades::convertirARadianes(this->angulo);
+    int origenX = this->x + cos(direccionRad) * (this->radio + 10);
+    int origenY = this->y - sin(direccionRad) * (this->radio + 10);
+
+    int colorIndex = 0;
 
     while(true){
-        int puntoX = origenX + cos(direccionRad) * (multiplicadorDistanciaOrigen * 25);
-        int puntoY = origenY - sin(direccionRad) * (multiplicadorDistanciaOrigen * 25);
-
-        if( puntoY < configuracion::LIMITE_DE_DIBUJO_DE_TRAYECTORIA + this->radioPuntosDeTrayectoria) break;
+        int color = configuracion::PALETA_COLORES[colorIndex];
+        int puntoX = origenX + cos(direccionRad) * (multiplicadorDistanciaOrigen * 15);
+        int puntoY = origenY - sin(direccionRad) * (multiplicadorDistanciaOrigen * 15);
+        if(
+            puntoY < configuracion::LIMITE_DE_DIBUJO_DE_TRAYECTORIA + this->radioPuntosDeTrayectoria && (
+                ((puntoY - this->radioPuntosDeTrayectoria) < 0) ||
+                ((puntoX - this->radioPuntosDeTrayectoria) < 0) ||
+                ((puntoX + this->radioPuntosDeTrayectoria) > configuracion::ANCHO_DE_VENTANA)
+            )
+        ) break;
 
         if((puntoX + this->radioPuntosDeTrayectoria > 400) || (puntoX - this->radioPuntosDeTrayectoria < 0) ) {
-            // int desplazamiento_x = (dot_x < 0 )? (dot_x * -1): (dot_x - 400);
-            // float desplazamiento_y = desplazamiento_x  * tan(obtenerRadianes(direccion));
             direccion = 180 - direccion;
             direccionRad = utilidades::convertirARadianes(direccion);
             origenX = puntoX;
             origenY =  puntoY;
             multiplicadorDistanciaOrigen = 0;
-            // continue;
+            colorIndex++;
+
+            if(colorIndex >= configuracion::PALETA_COLORES.size()) {
+                colorIndex = 0;
+            }
+
         }
 
-        Circulo( puntoX,  puntoY, this->radioPuntosDeTrayectoria);
+        
+        PuntoTrayectoria* puntoTrayectoria = new PuntoTrayectoria(
+            puntoX, puntoY, color ,(puntoY - this->radioPuntosDeTrayectoria) > configuracion::LIMITE_DE_DIBUJO_DE_TRAYECTORIA
+        );
+        this->trayectoria.push_back(puntoTrayectoria);
+        this->agregarHijo(puntoTrayectoria);
         multiplicadorDistanciaOrigen ++;
-
     }
 }
 
+void Canon::manejarProyectil() {
+    if(this->proyectil == nullptr) return;
+
+    if(!this->proyectil->estaAvanzando()) {
+        *this->puntos -= 2;
+        this->reiniciar();
+        return;
+    }
+
+    for (size_t i = 0; i < this->fantasmas->size(); i++){
+        Fantasma *fantasma = this->fantasmas->at(i);
+        if(!fantasma->esVisible()) continue;
+
+        if(
+            !((
+                (this->proyectil->obtenerDer() <= fantasma->obtenerDer() && this->proyectil->obtenerDer() >= fantasma->obtenerIzq()) ||
+                (this->proyectil->obtenerIzq() <= fantasma->obtenerDer() && this->proyectil->obtenerIzq() >= fantasma->obtenerIzq())
+            )
+            &&
+            (
+                (this->proyectil->obtenerArr() >= fantasma->obtenerArr() && this->proyectil->obtenerArr() <= fantasma->obtenerAba()) ||
+                (this->proyectil->obtenerAba() >= fantasma->obtenerArr() && this->proyectil->obtenerAba() <= fantasma->obtenerAba())
+            ))
+        ) continue;
+        if(fantasma->obtenerColor() != this->proyectil->obtenerColor()) {
+            *this->puntos -=2;
+            this->reiniciar();
+            break;
+        }
+        fantasma->ocultar();
+        *this->puntos += 10;
+
+        this->reiniciar();
+        break;
+        
+    }
+    
+
+}
+
+void Canon::reiniciar() {
+    this->eliminarHijo(this->proyectil);
+    delete this->proyectil;
+    this->proyectil = nullptr;
+
+    this->calcularTrayectoria();
+    utilidades::mezclarVector(&configuracion::PALETA_COLORES);
+}

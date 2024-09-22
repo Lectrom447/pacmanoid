@@ -1,4 +1,5 @@
 #include "objetoui.h"
+#include "algorithm"
 
 
 void ObjetoUI::propagarTiempo() {
@@ -19,4 +20,14 @@ void ObjetoUI::siguienteTiempo() {
 
 void ObjetoUI::agregarHijo(ObjetoUI *hijo) {
     this->hijos.push_back(hijo);
+}
+
+void ObjetoUI::eliminarHijo(ObjetoUI *hijo) {
+    auto idx = std::find(
+        this->hijos.begin(), 
+        this->hijos.end(), 
+        hijo
+    );
+
+    hijos.erase(idx);
 }

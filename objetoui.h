@@ -13,6 +13,7 @@ class ObjetoUI {
     public:
         virtual void siguienteTiempo();
         void agregarHijo(ObjetoUI *hijo);
+        void eliminarHijo(ObjetoUI *hijo);
 
 };
 

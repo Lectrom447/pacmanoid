@@ -34,7 +34,6 @@ PanelControles::PanelControles(int alto, Canon *canon) {
         80,40, TIPO_BOTON::BT_3D, "Pacan!", "Arial"
     );
 
-
     this->agregarHijo(this->botonMoverIzquierda);
     this->agregarHijo(this->botonMoverDerecha);
     this->agregarHijo(this->botonRotarIzquierda);
@@ -52,6 +51,11 @@ void PanelControles::dibujar() {
         configuracion::ANCHO_DE_VENTANA,
         this->limiteAbajoVentana
     );
+    FormatoBorde(EB_CONTINUO, 2, CL_NEGRO);
+    for (size_t i = 0; i < configuracion::PALETA_COLORES.size(); i++) {
+        FormatoRelleno(ER_SOLIDO, configuracion::PALETA_COLORES[i]);
+        Circulo(305 + (25 * i), this->arriba + 30, 10 );
+    }
 }
 
 void PanelControles::manejarBotones() {

@@ -18,10 +18,11 @@ Fantasma::Fantasma(int x, int y, int tamano) {
     this->color = configuracion::PALETA_COLORES[
         utilidades::numeroAleatorio(configuracion::PALETA_COLORES.size() - 1)
     ];
+    this->calcularLimites();
 }
 
 void Fantasma::dibujar() {
-    if(!this->esVisible) return;
+    if(!this->visible) return;
     FormatoRelleno(ER_SOLIDO, this->color);
     FormatoBorde(EB_CONTINUO, 1, this->color);
     Sector(
@@ -99,7 +100,7 @@ void Fantasma::dibujar() {
          ojosY - (1 - this->mitadTamano/9),
         this->mitadTamano/6
     );
-
+   
 }
 
 void Fantasma::animar() {
@@ -114,4 +115,40 @@ void Fantasma::animar() {
 void Fantasma::siguienteTiempo() {
     this->animar();
     this->dibujar();
+    this->calcularLimites();
+}
+
+void Fantasma::ocultar() {
+    this->visible = false;
+}
+
+void Fantasma::calcularLimites() {
+    this->izq = this->x - this->mitadTamano;
+    this->arr = this->y - (this->mitadTamano * (3.0/2.0));
+    this->der = this->x + this->mitadTamano;
+    this->aba = this->y + (this->mitadTamano/2.0) + (this->mitadTamano/3.0);
+}
+
+int Fantasma::obtenerIzq() {
+    return this->izq;
+}
+
+int Fantasma::obtenerArr() {
+    return this->arr;
+}
+
+int Fantasma::obtenerDer() {
+    return this->der;
+}
+
+int Fantasma::obtenerAba() {
+    return this->aba;
+}
+
+int Fantasma::obtenerColor() {
+    return this->color;
+}
+
+bool Fantasma::esVisible() {
+    return this->visible;
 }

@@ -1,8 +1,7 @@
 #include "utilidades.h"
 #include <math.h>
-#include <ctime>
-// #include <stdlib.h>
 #include <random>
+#include <algorithm>
 
 float utilidades::convertirARadianes(int angulo) {
     return angulo * M_PI / 180;
@@ -24,6 +23,10 @@ int utilidades::numeroAleatorio(int limite) {
     std::mt19937 generador(dispositivo());
     std::uniform_int_distribution<> distribucion(0, limite);
     return distribucion(generador);
-    // srand(time());
-    // return rand() % (limite + 1);
+}
+
+void utilidades::mezclarVector(std::vector<int> *lista) {
+    std::random_device dispositivo;
+    std::default_random_engine generador(dispositivo());
+    std::shuffle(lista->begin(), lista->end(), generador);
 }

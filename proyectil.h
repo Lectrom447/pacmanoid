@@ -1,37 +1,35 @@
-#ifndef FANTASMA_H
-#define FANTASMA_H
+#ifndef PROYECTIL_H
+#define PROYECTIL_H
+#include <vector>
 #include "objetoui.h"
-#include "graphito.h"
+#include "puntotrayectoria.h"
 
-class Fantasma: public ObjetoUI {
+class Proyectil: public ObjetoUI {
     private:
         int x;
         int y;
-        int dibujarX;
-        int dibujarY;
         int izq;
         int der;
         int aba;
         int arr;
-        int tamano;
+        int dibujarX;
+        int dibujarY;
         int visible = true;
-        int mitadTamano;
-        int direccionAnimacion = 1;
+        int posicion = 0;
         int color;
+        int avanzando = true;
+        std::vector<PuntoTrayectoria*> *trayectoria;
         void dibujar();
-        void animar();
+        void avanzar();
         void calcularLimites();
     public:
-        Fantasma(int x, int y, int tamano);
+        Proyectil(int x, int y, std::vector<PuntoTrayectoria*> *trayectoria);
         void siguienteTiempo();
+        bool estaAvanzando();
         int obtenerIzq();
         int obtenerDer();
         int obtenerArr();
         int obtenerAba();
         int obtenerColor();
-        bool esVisible();
-        void ocultar();
-
 };
-
 #endif

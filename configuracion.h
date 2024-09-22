@@ -1,6 +1,5 @@
 #ifndef CONFIGURACION_H
 #define CONFIGURACION_H
-#include "graphito.h"
 #include "vector"
 
 
@@ -11,14 +10,8 @@ namespace configuracion{
     const int VELOCIDAD_ROTACION_CANON = 1;
     const int VELOCIDAD_MOVIMIENTO_CANON = 2;
     const int VELOCIDAD_ANIMACION_DIPARO_CANON = 3;
-    const std::vector<int> PALETA_COLORES( {
-        graphito::CL_ROJO,
-        graphito::CL_AZUL,
-        graphito::CL_CYAN,
-        graphito::CL_NARANJA,
-    });
- 
-    
+    extern std::vector<int> PALETA_COLORES;
+
 } // namespace configuracion
 
 #endif
