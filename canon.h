@@ -17,6 +17,7 @@ class Canon: public ObjetoUI {
         int radioPuntosDeTrayectoria = 4;
         int radio;
         int* puntos;
+        int* fantasmasEliminados;
         bool ejecutandoAnimacionDisparo = false;
         int direccionAnimacionDisparo = 1;
         int desfaseAnimacionDisparo = 0;
@@ -31,7 +32,7 @@ class Canon: public ObjetoUI {
         void animar();
         void reiniciar();
     public:
-        Canon(int x, int y, int size, int* puntos, std::vector<Fantasma*> *fantasmas);
+        Canon(int x, int y, int size, int* puntos, int* fantasmasEliminados, std::vector<Fantasma*> *fantasmas);
         void siguienteTiempo();
         void disparar();
         void rotar(int angulo);

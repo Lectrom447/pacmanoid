@@ -1,4 +1,3 @@
-#include <iostream>
 #include <string>
 #include <math.h>
 
@@ -13,7 +12,7 @@
 using namespace graphito;
 using namespace std;
 
-Canon::Canon(int x, int y, int size, int* puntos, std::vector<Fantasma*> *fantasmas) {
+Canon::Canon(int x, int y, int size, int* puntos, int* fantasmasEliminados, std::vector<Fantasma*> *fantasmas) {
     this->x = x;
     this->y = y;
     this->dibujarX = x;
@@ -22,6 +21,7 @@ Canon::Canon(int x, int y, int size, int* puntos, std::vector<Fantasma*> *fantas
     this->radio = size / 2;
     this->puntos = puntos;
     this->fantasmas = fantasmas;
+    this->fantasmasEliminados = fantasmasEliminados;
     utilidades::mezclarVector(&configuracion::PALETA_COLORES);
     this->calcularTrayectoria();
 }
@@ -187,7 +187,7 @@ void Canon::calcularTrayectoria() {
 
         
         PuntoTrayectoria* puntoTrayectoria = new PuntoTrayectoria(
-            puntoX, puntoY, color ,(puntoY - this->radioPuntosDeTrayectoria) > configuracion::LIMITE_DE_DIBUJO_DE_TRAYECTORIA
+            puntoX, puntoY, direccion,color ,(puntoY - this->radioPuntosDeTrayectoria) > configuracion::LIMITE_DE_DIBUJO_DE_TRAYECTORIA
         );
         this->trayectoria.push_back(puntoTrayectoria);
         this->agregarHijo(puntoTrayectoria);
@@ -226,7 +226,7 @@ void Canon::manejarProyectil() {
         }
         fantasma->ocultar();
         *this->puntos += 10;
-
+        *this->fantasmasEliminados+= 1;
         this->reiniciar();
         break;
         

@@ -10,6 +10,7 @@
 class Juego {
     private:
         int puntos = 0;
+        int fantasmasEliminados = 0;
         ObjetoRaiz objetoRaiz;
         PanelControles *panelControles;
         Canon *canon;

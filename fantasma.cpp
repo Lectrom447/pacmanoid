@@ -2,7 +2,6 @@
 #include "graphito.h"
 #include "utilidades.h"
 #include "configuracion.h"
-#include <iostream>
 
 using namespace graphito;
 using namespace std;

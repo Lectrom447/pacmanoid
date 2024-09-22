@@ -14,6 +14,7 @@ class Proyectil: public ObjetoUI {
         int arr;
         int dibujarX;
         int dibujarY;
+        int angulo;
         int visible = true;
         int posicion = 0;
         int color;

@@ -3,11 +3,12 @@
 
 using namespace graphito;
 
-PuntoTrayectoria::PuntoTrayectoria(int x, int y, int color, bool visible) {
+PuntoTrayectoria::PuntoTrayectoria(int x, int y, int angulo,int color, bool visible) {
     this->x = x;
     this->y = y;
     this->visible = visible;
     this->color = color;
+    this->angulo = angulo;
 }
 
 void PuntoTrayectoria::dibujar() {
@@ -37,4 +38,8 @@ int PuntoTrayectoria::obtenerY() {
 
 int PuntoTrayectoria::obtenerColor() {
     return this->color;
+}
+
+int PuntoTrayectoria::obtenerAngulo() {
+    return this->angulo;
 }

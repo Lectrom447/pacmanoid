@@ -11,9 +11,9 @@ Proyectil::Proyectil(int x, int y, std::vector<PuntoTrayectoria*>* trayectoria) 
     this->y = y;
     this->dibujarX = x;
     this->dibujarY = y;
-    // this->angulo = angulo;
     this->trayectoria = trayectoria;
     this->color = trayectoria->at(0)->obtenerColor();
+    this->angulo = trayectoria->at(0)->obtenerAngulo();
     this->calcularLimites();
 
 }
@@ -23,6 +23,22 @@ void Proyectil::dibujar() {
     FormatoBorde(EB_CONTINUO, 1, CL_NEGRO);
     FormatoRelleno(ER_SOLIDO, this->color);
     Circulo(this->dibujarX, this->dibujarY, 10);
+
+    FormatoRelleno(ER_SOLIDO, CL_NEGRO);
+    float ojoAngRad = utilidades::convertirARadianes(this->angulo + 40);
+    Circulo(
+        this->dibujarX + cos(ojoAngRad) * (5), 
+        this->dibujarY - sin(ojoAngRad) * (5), 
+        2 
+    );
+    Sector(
+        this->dibujarX, 
+        this->dibujarY, 
+        11, 
+        this->angulo+20, 
+        this->angulo -20
+    );
+
 }
 
 void Proyectil::siguienteTiempo() {
@@ -42,6 +58,7 @@ void Proyectil::avanzar() {
     this->y = puntoTrayectoria->obtenerY();
     this->dibujarY = this->y;
     this->color = puntoTrayectoria->obtenerColor();
+    this->angulo = puntoTrayectoria->obtenerAngulo();
     puntoTrayectoria->ocultar();
     this->posicion ++;
 }

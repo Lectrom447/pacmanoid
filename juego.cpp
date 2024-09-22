@@ -3,7 +3,6 @@
 #include "fantasma.h"
 #include "graphito.h"
 #include "configuracion.h"
-#include <iostream>
 #include <string>
 
 
@@ -36,6 +35,7 @@ Juego::Juego() {
         configuracion::ALTO_DE_VENTANA * (3.2/4.0),
         50,
         &this->puntos,
+        &this->fantasmasEliminados,
         &this->fantasmas
     );
     this->objetoRaiz.agregarHijo(this->canon);
@@ -45,6 +45,8 @@ Juego::Juego() {
 
 void Juego::ejecutar() {
     while(true) {
+
+
         VLimpia();
         TFormato("Arial", 20, 0, FT_NEGRITA, CL_BLANCO);
         TJustificar(JT_DERECHA);
@@ -53,7 +55,7 @@ void Juego::ejecutar() {
             10, 
             configuracion::ANCHO_DE_VENTANA* (3.5/4.0), 
             40, 
-            "Puntos: "+ to_string(this->puntos)
+            "Puntos: "+ to_string(this->puntos) 
         );
         FormatoBorde(EB_RAYAS, 3, CL_ROJO);
         Linea(
@@ -65,5 +67,10 @@ void Juego::ejecutar() {
         this->objetoRaiz.siguienteTiempo();
         VRefresca();
         Espera(16);
+
+        if(this->fantasmasEliminados >= this->fantasmas.size()) {
+            Mensaje("El juego ha terminado, conseguiste " + to_string(this->puntos) + " puntos");
+            VCierra();
+        }
     }
 }

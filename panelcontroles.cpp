@@ -2,7 +2,6 @@
 #include "graphito.h"
 #include "configuracion.h"
 #include "boton.h"
-#include "iostream"
 
 
 using namespace graphito;
@@ -15,11 +14,11 @@ PanelControles::PanelControles(int alto, Canon *canon) {
     this->arriba = this->limiteAbajoVentana - this->alto;
     this->botonMoverIzquierda = new Boton( 
         10, this->arriba + 10,
-        40,40, TIPO_BOTON::BT_3D, "<"
+        40,40, TIPO_BOTON::BT_3D, "3",  "Webdings"
     );
     this->botonMoverDerecha = new Boton( 
         60, this->arriba + 10,
-        40,40, TIPO_BOTON::BT_3D, ">"
+        40,40, TIPO_BOTON::BT_3D, "4", "Webdings"
     );
     this->botonRotarIzquierda = new Boton( 
         110, this->arriba + 10,
